@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TheusMK Scripts - Scripts e Executores para Roblox</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#8A2BE2',
+                        secondary: '#9D4EDD'
+                    },
+                    borderRadius: {
+                        'none': '0px',
+                        'sm': '4px',
+                        DEFAULT: '8px',
+                        'md': '12px',
+                        'lg': '16px',
+                        'xl': '20px',
+                        '2xl': '24px',
+                        '3xl': '32px',
+                        'full': '9999px',
+                        'button': '8px'
+                    },
+                    fontFamily: {
+                        'orbitron': ['Orbitron', 'monospace'],
+                        'rajdhani': ['Rajdhani', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        :where([class^="ri-"])::before {
+            content: "\f3c2";
+        }
+
+        body {
+            background: linear-gradient(135deg, #0A0A0A 0%, #1A0A1A 50%, #0A0A0A 100%);
+            min-height: 100vh;
+        }
+
+        .neon-glow {
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.3), 0 0 40px rgba(138, 43, 226, 0.1);
+        }
+
+        .neon-text {
+            text-shadow: 0 0 10px rgba(138, 43, 226, 0.8), 0 0 20px rgba(138, 43, 226, 0.4);
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(138, 43, 226, 0.3);
+        }
+
+        .btn-neon {
+            background: linear-gradient(45deg, #8A2BE2, #9D4EDD);
+            transition: all 0.3s ease;
+        }
+
+        .btn-neon:hover {
+            background: linear-gradient(45deg, #9D4EDD, #B967DB);
+            box-shadow: 0 0 20px rgba(138, 43, 226, 0.6);
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #0A0A0A;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(45deg, #8A2BE2, #9D4EDD);
+            border-radius: 4px;
+        }
+
+        .tab-active {
+            border-bottom: 2px solid #8A2BE2;
+            color: #8A2BE2;
+        }
+
+        .grid-responsive {
+            display: grid;
+            gap: 2.5rem; /* Aumentado para mais espaço */
+        }
+
+        /* Ajustes responsivos: Mantido 4 colunas em desktop, mas com container maior */
+        @media (min-width: 1024px) {
+            .grid-responsive {
+                grid-template-columns: repeat(4, 1fr); /* Mantido 4 colunas */
+            }
+        }
+
+        @media (min-width: 768px) and (max-width: 1023px) {
+            .grid-responsive {
+                grid-template-columns: repeat(3, 1fr); /* 3 colunas em tablet para não apertar */
+            }
+        }
+
+        @media (max-width: 767px) {
+            .grid-responsive {
+                grid-template-columns: 1fr; /* 1 coluna em mobile */
+            }
+            .grid-responsive > div {
+                min-width: 90%; /* Cards ocupam 90% da largura em mobile */
+                margin: 0 auto; /* Centraliza */
+            }
+        }
+
+        /* Estilo para o input de pesquisa */
+        .search-input {
+            width: 100%;
+            max-width: 400px;
+            padding: 0.75rem 1rem;
+            margin-bottom: 1.5rem;
+            background-color: #1a1a1a;
+            border: 1px solid #8A2BE2;
+            border-radius: 8px;
+            color: white;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            box-shadow: 0 0 15px rgba(138, 43, 226, 0.5);
+        }
+
+        .search-input::placeholder {
+            color: #9D4EDD;
+        }
+
+        /* Novo estilo para rolagem horizontal das abas em mobile */
+        @media (max-width: 768px) {
+            .tab-nav-container {
+                justify-content: flex-start !important; /* Começa da esquerda */
+                overflow-x: auto; /* Permite rolagem horizontal */
+                flex-wrap: nowrap; /* Impede quebra de linha */
+                white-space: nowrap; /* Mantém itens em uma linha */
+                -webkit-overflow-scrolling: touch; /* Suaviza rolagem em iOS */
+                scrollbar-width: none; /* Oculta scrollbar no Firefox */
+            }
+
+            .tab-nav-container::-webkit-scrollbar {
+                display: none; /* Oculta scrollbar no Chrome/Safari */
+            }
+        }
+
+        /* Ajustes para imagens maiores */
+        .script-image-container {
+            height: 320px; /* Altura aumentada */
+        }
+
+        @media (max-width: 767px) {
+            .script-image-container {
+                height: 240px; /* Ajuste para mobile */
+            }
+        }
+
+        /* Largura mínima para cards (aumentada para 350px) */
+        .card {
+            min-width: 350px; /* Faz cards mais largos, mesmo em 4 colunas */
+        }
+    </style>
+</head>
+<body class="bg-black text-white font-rajdhani">
+    <header class="py-8 px-4">
+        <div class="max-w-screen-2xl mx-auto text-center"> <!-- Aumentado para max-w-screen-2xl -->
+            <h1 class="text-5xl md:text-7xl font-orbitron font-black text-white neon-text mb-4">
+                TheusMK Scripts
+            </h1>
+            <p class="text-xl text-gray-300 font-light">Scripts e Executores Premium para Roblox</p>
+        </div>
+    </header>
+    <nav class="px-4 mb-8">
+        <div class="max-w-screen-2xl mx-auto"> <!-- Aumentado para max-w-screen-2xl -->
+            <div class="flex justify-center space-x-8 border-b border-gray-800 tab-nav-container">
+                <button id="scripts-tab" class="tab-btn py-4 px-6 text-lg font-semibold transition-all duration-300 tab-active whitespace-nowrap !rounded-button flex items-center justify-center gap-2">
+<div class="w-6 h-6 flex items-center justify-center inline-block">
+<i class="ri-code-line"></i>
+</div>
+Scripts
+</button>
+                <button id="executors-tab" class="tab-btn py-4 px-6 text-lg font-semibold transition-all duration-300 text-gray-400 hover:text-primary whitespace-nowrap !rounded-button flex items-center justify-center gap-2">
+<div class="w-6 h-6 flex items-center justify-center inline-block">
+<i class="ri-play-circle-line"></i>
+</div>
+Executores
+</button>
+                <button id="emulators-tab" class="tab-btn py-4 px-6 text-lg font-semibold transition-all duration-300 text-gray-400 hover:text-primary whitespace-nowrap !rounded-button flex items-center justify-center gap-2">
+<div class="w-6 h-6 flex items-center justify-center inline-block">
+<i class="ri-computer-line"></i>
+</div>
+Emuladores
+</button>
+            </div>
+        </div>
+    </nav>
+    <main class="px-4 pb-16">
+        <div class="max-w-screen-2xl mx-auto"> <!-- Aumentado para max-w-screen-2xl -->
+            <div id="scripts-content" class="tab-content">
+                <div class="flex justify-center mb-6">
+                    <input type="text" id="scripts-search" class="search-input" placeholder="Pesquisar por nome...">
+                </div>
+                <div id="scripts-grid" class="grid-responsive">
+                    <!-- Os 4 movidos para o topo -->
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/Attack%20on%20titan%20revolution%20-%20Tekkit%20hub.png?raw=true" class="w-full h-full object-cover" alt="Attack on titan revolution - Tekkit hub">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">Attack on titan revolution - Tekkit hub</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Hub completo para Attack on Titan Revolution com funcionalidades avançadas como auto-farm, auto-quest, kill aura e sistema de voos otimizados. Proteção contra bans e interface intuitiva para máxima performance.</p>
+                        <button class="get-script-btn btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2" data-content='-- Ensure the game is loaded
+if game:IsLoaded() then
+    print("Game is already loaded, executing script.")
+else
+    game.Loaded:Wait()
+end
+
+local GameP = game.PlaceId
+
+-- Function to send notifications
+local function sendNotification(title, text)
+    game:GetService("StarterGui"):SetCore("SendNotification", {
+        Title = title,
+        Text = text,
+        Icon = "rbxassetid://13264701341"
+    })
+end
+
+-- Initial notifications
+sendNotification("Notification", "Checking")
+wait(0.1)
+sendNotification("Notification", "Check Place Id..")
+wait(0.1)
+
+-- Game specific logic
+local url
+
+if game.PlaceId == 12137249458 then  -- Gun Grounds
+    sendNotification("Notification", "Gun Grounds [" .. GameP .. "]")
+    url = "https://raw.githubusercontent.com/zerunquist/TekkitAotr/main/gungroundsffa"
+
+elseif game.PlaceId == 5094651510 or game.PlaceId == 4855457388 then 
+    sendNotification("Notification", "Demon Fall [" .. GameP .. "]")
+    url = "https://raw.githubusercontent.com/JD-04/Tekkit/main/Demon%20Fall"
+
+elseif game.PlaceId == 13772394625 or game.PlaceId == 17757592456 or game.PlaceId == 16456370330 or game.PlaceId == 16281300371 or game.PlaceId == 15144787112 or game.PlaceId == 16581648071 or game.PlaceId == 15234596844 or game.PlaceId == 14915220621 or game.PlaceId == 15264892126 or game.PlaceId == 14732610803 then  -- BladeBall
+    sendNotification("Notification", "Blade Ball [" .. GameP .. "]")
+    url = "https://raw.githubusercontent.com/JD-04/Tekkit/main/BladeBall"
+
+elseif game.PlaceId == 2753915549 or game.PlaceId == 4442272183 or game.PlaceId == 7449423635 then
+    sendNotification("Notification", "Blox Fruits [" .. GameP .. "]")
+    url = "https://raw.githubusercontent.com/JD-04/Tekkit/refs/heads/main/Blox%20obf.txt"
+
+elseif game.PlaceId == 286090429 then
+    sendNotification("Notification", "Arsenal [" .. GameP .. "]")
+    url = "https://raw.githubusercontent.com/JD-04/Tekkit/refs/heads/main/Arsenal"
+-- Add other games here as needed
+
+else
+    sendNotification("Notification", "Loading Aot:R Hub [" .. GameP .. "]")
+    url = "https://api.luarmor.net/files/v3/loaders/705e7fe7aa288f0fe86900cedb1119b1.lua"
+end
+
+-- Load and execute the script from the URL
+if url then
+    local success, response = pcall(function()
+        return game:HttpGet(url)
+    end)
+
+    if success then
+        loadstring(response)()
+    else
+        sendNotification("Error", "Failed to load script from URL: " .. url)
+    end
+else
+    sendNotification("Error", "No URL found for the current game.")
+end'>
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Get Script
+</button>
+                    </div>
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/Roblox%20Hunty%20Zombie%20Script.png?raw=true" class="w-full h-full object-cover" alt="Volleyball Legends - Sigma hub">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">Hunty Zombie Script Roblox</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Hub avançado para Hunty Zombie com auto farm, kill aura, ESP de inimigos e loot automático. Scripts otimizados para máximo desempenho e proteção contra bans, permitindo farmar sem esforço. Ideal para dominar hordas de zumbis e evoluir rápido no game com interface simples e intuitiva.</p>
+                        <button class="get-script-btn btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2" data-content=loadstring(game:HttpGet("https://raw.githubusercontent.com/meobeo8/type/main/Loader"))()>
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Get Script
+</button>
+                    </div>
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/Volleyball%20Legends%20-%20Sigma%20hub.png?raw=true" class="w-full h-full object-cover" alt="Volleyball Legends - Sigma hub">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">Volleyball Legends - Sigma hub</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Hub avançado para Volleyball Legends com auto spike, defesa automática, ESP de jogadores e time assist. Scripts otimizados para máximo desempenho e proteção contra bans. Ideal para dominar as partidas com facilidade.</p>
+                        <button class="get-script-btn btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2" data-content="loadstring(game.HttpGet(game, 'https://raw.githubusercontent.com/Xm2iufas09ijmF/sigma-hub/refs/heads/main/temp.lua'))()"))()">
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Get Script
+</button>
+                    </div>
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/Fisch%20-%20ub%20hub.png?raw=true" class="w-full h-full object-cover" alt="Fisch - ub hub">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">Fisch - ub hub</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Hub premium para Fisch com suporte a auto farm, kill aura, ESP, coleta automática e sistema de evolução instantânea. Interface intuitiva, performance otimizada e proteção anti-ban integrada. Ideal para progresso rápido e seguro.</p>
+                        <button class="get-script-btn btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2" data-content='loadstring(game:HttpGet("https://raw.githubusercontent.com/TeamUBHub/Script-Roblox/refs/heads/main/Fisch.lua"))()'>
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Get Script
+</button>
+                    </div>
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/Ink%20Game%20-%20Blind%20Hub.png?raw=true" class="w-full h-full object-cover" alt="Ink Game - Blind Hub">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">Ink Game - Blind Hub</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Hub avançado para Ink Game com funções como auto farm, invisibilidade, teleportes rápidos e bypass de obstáculos. Scripts leves, proteção contra bans e suporte para atualizações frequentes. Domine o jogo com facilidade e discrição.</p>
+                        <button class="get-script-btn btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2" data-content='loadstring(game:HttpGet("https://raw.githubusercontent.com/Blind-Man-Walking/Ink-game-script/refs/heads/main/Test3"))()'>
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Get Script
+</button>
+                    </div>
+                    <!-- Scripts existentes (apenas os com imagens atualizadas) -->
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/ROUBE%20UM%20BRAINROT%20-%20Pulsar%20X%20Hub.png?raw=true" class="w-full h-full object-cover" alt="ROUBE UM BRAINROT - Pulsar X Hub">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">ROUBE UM BRAINROT - Pulsar X Hub</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Hub premium para Roube um Brainrot com features exclusivas do Pulsar X, incluindo auto-farm, ESP e anti-detecção avançada.</p>
+                        <button class="get-script-btn btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2" data-content='loadstring(game:HttpGet("https://raw.githubusercontent.com/Estevansit0/KJJK/refs/heads/main/PusarX-loader.lua"))()'>
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Get Script
+</button>
+                    </div>
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/ROUBE_UM_BRAINROT_Chilli_hub.png?raw=true" class="w-full h-full object-cover" alt="ROUBE UM BRAINROT - Chilli hub">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">ROUBE UM BRAINROT - Chilli hub</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Hub avançado para Roube um Brainrot com o Chilli, oferecendo scripts otimizados para farming, hacks de velocidade e proteção contra bans.</p>
+                         <button class="get-script-btn btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2" data-content='loadstring(game:HttpGet("https://raw.githubusercontent.com/tienkhanh1/spicy/main/Chilli.lua"))()'>
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Get Script
+</button>
+                    </div>
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/Volcano%20Hub%20V3%20%E2%80%93%20Blox%20Fruits%20Script%20(No%20Key).png?raw=true" class="w-full h-full object-cover" alt="Volcano Hub V3 – Blox Fruits Script (No Key)">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">Volcano Hub V3 – Blox Fruits Script (No Key)</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Hub avançado para Blox Fruits com auto farm, teleportes e recursos sem necessidade de key. Atualizações frequentes e anti-ban.</p>
+                        <button class="get-script-btn btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2" data-content='loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/indexeduu/BF-NewVer/refs/heads/main/V3New.lua"))()'>
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Get Script
+</button>
+                    </div>
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/BLOX%20FRUITS%20%E2%80%93%20REDz%20Hub%20%E2%9B%A9%EF%B8%8F.png?raw=true" class="w-full h-full object-cover" alt="BLOX FRUITS – REDz Hub ⛩️">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">BLOX FRUITS – REDz Hub ⛩️</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Hub temático para Blox Fruits com farming automático, boss raids e customizações exclusivas. Interface intuitiva e suporte mobile.</p>
+                        <button class="get-script-btn btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2" data-content='local Settings = {\n    JoinTeam = "Pirates"; -- Pirates / Marines\n    Translator = true;   -- true / false\n}\nloadstring(game:HttpGet("https://raw.githubusercontent.com/tlredz/Scripts/refs/heads/main/main.luau"))(Settings)'>
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Get Script
+</button>
+                    </div>
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/99%20Nights%20in%20the%20Forest%20Script%20%E2%80%93%20Infinte%20Diamond.png?raw=true" class="w-full h-full object-cover" alt="99 Nights in the Forest Script – Infinte Diamond">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">99 Nights in the Forest Script – Infinte Diamond</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Script com diamantes infinitos para 99 Nights in the Forest, farming automático e upgrades ilimitados. Seguro e eficiente.</p>
+                        <button class="get-script-btn btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2" data-content='loadstring(game:HttpGet("https://raw.githubusercontent.com/r4mpage4/LuaCom/refs/heads/main/farmchest.gey"))()'>
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Get Script
+</button>
+                    </div>
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/Tsuo%20Hub%20%E2%80%93%20Blox%20Fruits%20Script%20(No%20Key).png?raw=true" class="w-full h-full object-cover" alt="Tsuo Hub – Blox Fruits Script (No Key)">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">Tsuo Hub – Blox Fruits Script (No Key)</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Hub Tsuo para Blox Fruits sem key, com auto-quest, fruit finder e combate aprimorado. Fácil de usar e atualizado.</p>
+                        <button class="get-script-btn btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2" data-content='loadstring(game:HttpGet("https://raw.githubusercontent.com/Tsuo7/TsuoHub/main/Tsuoscripts"))()'>
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Get Script
+</button>
+                    </div>
+                </div>
+                <!-- Adicionado: Área para botões de paginação -->
+                <div id="scripts-pagination" class="flex justify-center mt-8 space-x-2"></div>
+            </div>
+                        <div id="executors-content" class="tab-content hidden">
+                <div class="flex justify-center mb-6">
+                    <input type="text" id="executors-search" class="search-input" placeholder="Pesquisar por nome...">
+                </div>
+                <div id="executors-grid" class="grid-responsive">
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/Delta.png?raw=true" class="w-full h-full object-cover" alt="DELTA ATUALIZADO✅">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">DELTA ATUALIZADO✅</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Executor poderoso e atualizado com suporte completo a scripts complexos, injeção rápida e proteção anti-detecção avançada.</p>
+                        <a href="https://www.mediafire.com/file/mya91cs1mh1qj1x/Delta-2.686.866_by_TheusMKScripts.apk/file" class="btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2">
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Download
+</a>
+                    </div>
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/Fluxus.png?raw=true" class="w-full h-full object-cover" alt="FLUXUS ATUALIZADO✅">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">FLUXUS ATUALIZADO✅</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Executor gratuito e atualizado com excelente compatibilidade, sistema de key renovável e interface intuitiva com editor de código integrado.</p>
+                        <a href="https://www.mediafire.com/file/o9j1v5di8txe96c/Fluxus685+ANTI-BAN+By+PedrinTravasOFC.apk/file" class="btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2">
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Download
+</a>
+                    </div>
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/Krnl.png?raw=true" class="w-full h-full object-cover" alt="EXECUTOR KRNL ATUALIZADO✅">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">EXECUTOR KRNL ATUALIZADO✅</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Executor gratuito e atualizado com ótima performance e estabilidade, ideal para iniciantes com interface simples e execução confiável.</p>
+                        <a href="https://www.mediafire.com/file/tx9jg2orhdxjog0/KRNL-v2.685_By_PedrinTravasOFC.apk/file" class="btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2">
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Download
+</a>
+                    </div>
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/ARCEUS%20X.png?raw=true" class="w-full h-full object-cover" alt="ARCEUS X ATUALIZADO✅">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">ARCEUS X ATUALIZADO✅</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Executor mobile atualizado com suporte a scripts avançados, interface otimizada para dispositivos Android e atualizações frequentes.</p>
+                        <a href="https://www.mediafire.com/file/48n6jdspaj67upv/Roblox.Arceus.X.NEO.1.7.7+By+PedrinTravasOFC.apk/file" class="btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2">
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Download
+</a>
+                    </div>
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/CODEX.png?raw=true" class="w-full h-full object-cover" alt="CODEX ATUALIZADO✅">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">CODEX ATUALIZADO✅</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Executor premium e atualizado com injeção rápida, suporte a Lua completo e recursos de segurança para evitar detecções.</p>
+                        <a href="https://www.mediafire.com/file/c9ovcxzxvq4o5gu/Codex_2.679_By_PedrinTravasOFC.apk/file" class="btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2">
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Download
+</a>
+                    </div>
+                </div>
+            </div>
+            <div id="emulators-content" class="tab-content hidden">
+                <div class="flex justify-center mb-6">
+                    <input type="text" id="emulators-search" class="search-input" placeholder="Pesquisar por nome...">
+                </div>
+                <div id="emulators-grid" class="grid-responsive">
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/MuMuPlay.png?raw=true" class="w-full h-full object-cover" alt="MuMu Play">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">MuMu Play</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Emulador Android otimizado para jogos com alto desempenho. Interface intuitiva, suporte a mapeamento de teclas e compatibilidade com diversos jogos.</p>
+                        <a href="https://www.mumuplayer.com" class="btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2">
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Download
+</a>
+                    </div>
+                    <div class="bg-gray-900 border border-primary/30 rounded-lg p-8 card-hover neon-glow card">
+                        <div class="w-full script-image-container mb-4 overflow-hidden rounded-lg">
+                            <img src="https://github.com/TheusMKbr/TheusMK-imagens/blob/main/Ldplayer.png?raw=true" class="w-full h-full object-cover" alt="LDPlayer">
+                        </div>
+                        <h3 class="text-3xl font-bold text-white mb-3">LDPlayer</h3>
+                        <p class="text-gray-300 mb-4 leading-relaxed text-lg">Emulador Android leve e rápido, perfeito para jogos mobile. Oferece recursos avançados de personalização e suporte multi-instância.</p>
+                        <a href="https://pt.ldplayer.net" class="btn-neon text-white px-6 py-3 rounded-button font-semibold w-full whitespace-nowrap !rounded-button flex items-center justify-center gap-2">
+<div class="w-5 h-5 flex items-center justify-center inline-block">
+<i class="ri-download-line"></i>
+</div>
+Download
+</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+        <!-- Modal para exibir e copiar o script -->
+    <div id="script-modal" class="fixed inset-0 bg-black bg-opacity-80 hidden flex items-center justify-center z-50">
+        <div class="bg-gray-900 border border-primary/30 rounded-lg p-6 w-full max-w-2xl mx-4 neon-glow">
+            <h3 class="text-2xl font-bold text-white mb-4">Código</h3>
+            <textarea id="code-text" class="w-full h-32 bg-gray-800 border border-gray-700 p-4 rounded mb-4 text-white font-mono" readonly></textarea>
+            <div class="flex justify-end space-x-4">
+                <button id="copy-btn" class="btn-neon text-white px-6 py-3 rounded-button font-semibold flex items-center gap-2">
+                    <div class="w-5 h-5 flex items-center justify-center inline-block">
+                        <i class="ri-clipboard-line"></i>
+                    </div>
+                    Copiar
+                </button>
+                <button id="close-modal" class="bg-gray-700 text-white px-6 py-3 rounded-button font-semibold">Fechar</button>
+            </div>
+        </div>
+    </div>
+    <footer class="border-t border-primary/30 py-8 px-4 mt-16">
+        <div class="max-w-screen-2xl mx-auto text-center"> <!-- Aumentado para consistência -->
+            <p class="text-gray-400 text-sm">© 2025 TheusMK Scripts – Todos os direitos reservados</p>
+        </div>
+    </footer>
+
+    <script>
+        // JS para alternar tabs
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const tabContents = document.querySelectorAll('.tab-content');
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                tabBtns.forEach(b => b.classList.remove('tab-active', 'text-primary'));
+                btn.classList.add('tab-active', 'text-primary');
+                tabContents.forEach(content => content.classList.add('hidden'));
+                document.getElementById(btn.id.replace('-tab', '-content')).classList.remove('hidden');
+            });
+        });
+
+        // JS para modal de scripts
+        const modal = document.getElementById('script-modal');
+        const codeText = document.getElementById('code-text');
+        const copyBtn = document.getElementById('copy-btn');
+        const closeModal = document.getElementById('close-modal');
+        const getScriptBtns = document.querySelectorAll('.get-script-btn');
+
+        getScriptBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                codeText.value = btn.dataset.content;
+                modal.classList.remove('hidden');
+            });
+        });
+
+        copyBtn.addEventListener('click', () => {
+            codeText.select();
+            document.execCommand('copy');
+            alert('Código copiado!');
+        });
+
+        closeModal.addEventListener('click', () => {
+            modal.classList.add('hidden');
+        });
+
+        // JS para pesquisa em tempo real (atualiza a cada letra digitada, sem Enter)
+        function filterItems(searchInput, grid) {
+            const searchTerm = searchInput.value.toLowerCase();
+            const items = grid.querySelectorAll('.bg-gray-900'); // Seleciona todos os cards
+            items.forEach(item => {
+                const title = item.querySelector('h3').textContent.toLowerCase(); // Pega o título do card
+                if (title.includes(searchTerm)) {
+                    item.style.display = ''; // Mostra o card
+                } else {
+                    item.style.display = 'none'; // Esconde o card
+                }
+            });
+        }
+
+        // Aplica para a aba de Scripts
+        const scriptsSearch = document.getElementById('scripts-search');
+        const scriptsGrid = document.getElementById('scripts-grid');
+        scriptsSearch.addEventListener('input', () => filterItems(scriptsSearch, scriptsGrid));
+
+        // Aplica para a aba de Executores
+        const executorsSearch = document.getElementById('executors-search');
+        const executorsGrid = document.getElementById('executors-grid');
+        executorsSearch.addEventListener('input', () => filterItems(executorsSearch, executorsGrid));
+
+        // Aplica para a aba de Emuladores
+        const emulatorsSearch = document.getElementById('emulators-search');
+        const emulatorsGrid = document.getElementById('emulators-grid');
+        emulatorsSearch.addEventListener('input', () => filterItems(emulatorsSearch, emulatorsGrid));
+    </script>
+</body>
+</html>
